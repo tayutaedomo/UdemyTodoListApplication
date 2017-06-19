@@ -70,9 +70,10 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onSaveTapped"
         android:text="保存"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="538dp" />
+        tools:layout_editor_absoluteY="539dp" />
 
     <Button
         android:id="@+id/button2"
