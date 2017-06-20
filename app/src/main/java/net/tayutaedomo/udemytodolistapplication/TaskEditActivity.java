@@ -1,5 +1,7 @@
 package net.tayutaedomo.udemytodolistapplication;
 
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -55,22 +57,52 @@ public class TaskEditActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
-        Realm realm = Realm.getInstance(realmConfig);
+        long taskId = getIntent().getLongExtra("task_id", -1);
 
-        realm.beginTransaction();
+        if (taskId != -1) {
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+            Realm realm = Realm.getInstance(realmConfig);
 
-        Number maxId = realm.where(Task.class).max("id");
-        long nextId = maxId != null ? maxId.longValue() + 1 : 1;
-        Task task = realm.createObject(Task.class);
-        task.setId(nextId);
-        task.setDeadline(deadline);
-        task.setTitle(mTitleEdit.getText().toString());
-        task.setDetail(mDetailEdit.getText().toString());
+            RealmResults<Task> results = realm.where(Task.class).equalTo("id", taskId).findAll();
 
-        realm.commitTransaction();
+            realm.beginTransaction();
 
-        Toast.makeText(this, "保存しました", Toast.LENGTH_SHORT).show();
-        finish();
+            Task task = results.first();
+            task.setDeadline(deadline);
+            task.setTitle(mTitleEdit.getText().toString());
+            task.setDetail(mDetailEdit.getText().toString());
+
+            realm.commitTransaction();
+
+            Snackbar.make(findViewById(android.R.id.content),
+                    "更新しました", Snackbar.LENGTH_SHORT)
+                    .setAction("戻る", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finish();
+                        }
+                    })
+                    .setActionTextColor(Color.YELLOW)
+                    .show();
+
+        } else {
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+            Realm realm = Realm.getInstance(realmConfig);
+
+            realm.beginTransaction();
+
+            Number maxId = realm.where(Task.class).max("id");
+            long nextId = maxId != null ? maxId.longValue() + 1 : 1;
+            Task task = realm.createObject(Task.class);
+            task.setId(nextId);
+            task.setDeadline(deadline);
+            task.setTitle(mTitleEdit.getText().toString());
+            task.setDetail(mDetailEdit.getText().toString());
+
+            realm.commitTransaction();
+
+            Toast.makeText(this, "保存しました", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 }
