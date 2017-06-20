@@ -45,7 +45,7 @@ public class TaskEditActivity extends AppCompatActivity {
         realm.beginTransaction();
 
         Number maxId = realm.where(Task.class).max("id");
-        long nextId = maxId != null ? nextId = maxId.longValue() + 1 : 1;
+        long nextId = maxId != null ? maxId.longValue() + 1 : 1;
         Task task = realm.createObject(Task.class);
         task.setId(nextId);
         task.setDeadline(deadline);
