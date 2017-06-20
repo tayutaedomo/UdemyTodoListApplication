@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import io.realm.Realm;
@@ -50,6 +51,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, TaskEditActivity.class));
             }
         });
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Task task = (Task)parent.getItemAtPosition(position);
+                    startActivity(new Intent(MainActivity.this, TaskEditActivity.class).putExtra("task_id", task.getId()));
+                }
+            }
+        );
     }
 }
 
