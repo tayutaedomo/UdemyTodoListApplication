@@ -12,6 +12,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class TaskEditActivity extends AppCompatActivity {
 
@@ -27,6 +28,21 @@ public class TaskEditActivity extends AppCompatActivity {
         mDeadlineEdit = (EditText)findViewById(R.id.DeadlineEdit);
         mTitleEdit = (EditText)findViewById(R.id.TitleEdit);
         mDetailEdit = (EditText)findViewById(R.id.DetailEdit);
+
+        long taskId = getIntent().getLongExtra("task_id", -1);
+
+        if (taskId != -1) {
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+            Realm realm = Realm.getInstance(realmConfig);
+            RealmResults<Task> results = realm.where(Task.class).equalTo("id", taskId).findAll();
+            Task task = results.first();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+            String date = sdf.format(task.getDeadline());
+            mDeadlineEdit.setText(date);
+            mTitleEdit.setText(task.getTitle());
+            mDetailEdit.setText(task.getDetail());
+        }
     }
 
     public void onSaveTapped(View view) {
